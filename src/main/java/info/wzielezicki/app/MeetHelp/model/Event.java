@@ -99,4 +99,18 @@ public class Event {
     public void setMinEventTime(String minEventTime) {
         this.minEventTime = minEventTime;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id='" + id + '\'' +
+                ", eventTitle='" + eventTitle + '\'' +
+                ", eventDateFrom='" + eventDateFrom + '\'' +
+                ", eventDateTo='" + eventDateTo + '\'' +
+                ", minEventPartcipants='" + minEventPartcipants + '\'' +
+                ", eventDateConfirmTo='" + eventDateConfirmTo + '\'' +
+                ", location='" + location + '\'' +
+                ", minEventTime='" + minEventTime + '\'' +
+                '}';
+    }
 }

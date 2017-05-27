@@ -7,6 +7,7 @@ package info.wzielezicki.app.MeetHelp.service;
 import info.wzielezicki.app.MeetHelp.model.Event;
 import info.wzielezicki.app.MeetHelp.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import static java.util.stream.Collectors.toList;
 import java.util.List;
@@ -15,6 +16,9 @@ import java.util.List;
 public class EventService implements ServiceInterface<Event>{
 
     private EventRepository eventRepository;
+
+    @Autowired
+    private MongoOperations mongoOperations;
 
     @Autowired
     public EventService(EventRepository eventRepository) {
@@ -64,4 +68,5 @@ public class EventService implements ServiceInterface<Event>{
     public Event update(Event obj) {
         return null;
     }
+
 }

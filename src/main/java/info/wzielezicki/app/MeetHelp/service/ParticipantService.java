@@ -66,9 +66,9 @@ public class ParticipantService implements ServiceInterface<Participant>, Custom
         return null;
     }
 
+
     @Override
     public List<Participant> findByIdEvent(String id) {
-        List<Participant> participantList = participantRepository.findByIdEvent(id);
-        return convertToDTOs(participantList);
+        return null;
     }
 }

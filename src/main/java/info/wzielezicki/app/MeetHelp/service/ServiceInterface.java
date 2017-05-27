@@ -1,5 +1,7 @@
 package info.wzielezicki.app.MeetHelp.service;
 
+import org.springframework.data.mongodb.repository.Query;
+
 import java.util.List;
 
 /**
