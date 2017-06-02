@@ -45,7 +45,7 @@ public class ParticipantService implements ServiceInterface<Participant>, Custom
         dto.setAttendDataFrom(model.getAttendDataFrom());
         dto.setAttendDataTo(model.getAttendDataTo());
         dto.setEmail(model.getEmail());
-      //  dto.setIdEvent(model.getIdEvent());
+        //dto.setIdEvent(model.getId());
         dto.setName(model.getName());
         dto.setSurname(model.getSurname());
 
