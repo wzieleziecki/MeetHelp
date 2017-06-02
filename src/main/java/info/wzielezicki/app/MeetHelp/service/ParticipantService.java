@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by wzielezi on 2017-05-25.
  */
+
 @Service
 public class ParticipantService implements ServiceInterface<Participant>, CustomInterfaceParticipant {
 

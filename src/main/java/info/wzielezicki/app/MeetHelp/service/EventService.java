@@ -28,6 +28,10 @@ public class EventService implements ServiceInterface<Event>{
     @Override
     public List<Event> getObj() {
         List <Event> eventList = eventRepository.findAll();
+
+//logika
+
+
         return convertToDTOs(eventList);
     }
 
@@ -48,7 +52,7 @@ public class EventService implements ServiceInterface<Event>{
         dto.setEventDateTo(model.getEventDateTo());
         dto.setEventTitle(model.getEventTitle());
         dto.setLocation(model.getLocation());
-        dto.setMinEventTime(model.getMinEventTime());
+        dto.setMinEventTimeInHours(model.getMinEventTimeInHours());
         dto.setMinEventPartcipants(model.getMinEventPartcipants());
 
         return dto;

@@ -1,6 +1,9 @@
 package info.wzielezicki.app.MeetHelp.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * Created by wzielezi on 2017-05-23.
@@ -13,14 +16,15 @@ public class Participant {
     private String name;
     private String surname;
     private String email;
-    private String attend;
-    private String attendDataFrom;
-    private String attendDataTo;
+    private Integer attend;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date attendDataFrom;
+    private Date attendDataTo;
 
     public Participant() {
     }
 
-    public Participant(String idEvent, String name, String surname, String email, String attend, String attendDataFrom, String attendDataTo) {
+    public Participant(String idEvent, String name, String surname, String email, Integer attend, Date attendDataFrom, Date attendDataTo) {
         this.idEvent = idEvent;
         this.name = name;
         this.surname = surname;
@@ -30,16 +34,16 @@ public class Participant {
         this.attendDataTo = attendDataTo;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getIdEvent() {
         return idEvent;
     }
 
     public void setIdEvent(String idEvent) {
         this.idEvent = idEvent;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
@@ -62,27 +66,40 @@ public class Participant {
         this.email = email;
     }
 
-    public String getAttend() {
+    public Integer getAttend() {
         return attend;
     }
 
-    public void setAttend(String attend) {
+    public void setAttend(Integer attend) {
         this.attend = attend;
     }
 
-    public String getAttendDataFrom() {
+    public Date getAttendDataFrom() {
         return attendDataFrom;
     }
 
-    public void setAttendDataFrom(String attendDataFrom) {
+    public void setAttendDataFrom(Date attendDataFrom) {
         this.attendDataFrom = attendDataFrom;
     }
 
-    public String getAttendDataTo() {
+    public Date getAttendDataTo() {
         return attendDataTo;
     }
 
-    public void setAttendDataTo(String attendDataTo) {
+    public void setAttendDataTo(Date attendDataTo) {
         this.attendDataTo = attendDataTo;
+    }
+
+    @Override
+    public String toString() {
+        return "Participant{" +
+                "idEvent='" + idEvent + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", attend=" + attend +
+                ", attendDataFrom=" + attendDataFrom +
+                ", attendDataTo=" + attendDataTo +
+                '}';
     }
 }

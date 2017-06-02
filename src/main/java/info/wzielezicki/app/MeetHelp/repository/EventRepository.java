@@ -12,12 +12,10 @@ import java.util.stream.Stream;
  */
 public interface EventRepository extends MongoRepository <Event, String> {
 
-//    @Query("{'minEventPartcipants' : ?0}")
-//    List<Event> findByMinEventPartcipants(String minParticipant);
-
-    @Query("{'location' : ?0}")
     Stream<Event> findByLocation(String location);
 
-    @Query("{'location' : ?0}")
-    Stream<Event> findByMinEventPartcipants(String location);
+    List<Event> findByMinEventPartcipants(String minEventParticipant);
+
+    List<Event> findById(String eventId);
+
 }

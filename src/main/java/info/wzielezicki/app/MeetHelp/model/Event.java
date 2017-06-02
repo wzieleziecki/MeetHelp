@@ -2,6 +2,11 @@ package info.wzielezicki.app.MeetHelp.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wzielezi on 2017-05-23.
@@ -12,28 +17,36 @@ public class Event {
 
     @Id
     private String id;
+    //:)
+    private Date optimalMeetingTimeFrom;
+    private Date optimalMeetingTimeto;
+    private String coment;
+    private String status;
     private String eventTitle;
-    private String eventDateFrom;
-    private String eventDateTo;
-    private String minEventPartcipants; //waga: minimum uczestników
-    private String eventDateConfirmTo;
+    private Date eventDateTo;
+    private Date eventDateFrom;
+    private Integer minEventPartcipants;
+    private Date eventDateConfirmTo;
     private String location;
-    private String minEventTime;//waga: minimum czasu potrzebnego na spotkanie
-
-    // TODO: 2017-05-24 jak zaprogramować w przyszłości inne wagi dla spotkań?
-
+    private Long minEventTimeInHours;
+    private List<Participant> participantList = new ArrayList<>();
 
     public Event() {
     }
 
-    public Event(String eventTitle, String eventDateFrom, String eventDateTo, String minEventPartcipants, String eventDateConfirmTo, String location, String minEventTime) {
+    public Event(Date optimalMeetingTimeFrom, Date optimalMeetingTimeto, String coment, String status, String eventTitle, Date eventDateTo, Date eventDateFrom, Integer minEventPartcipants, Date eventDateConfirmTo, String location, Long minEventTimeInHours, List<Participant> participantList) {
+        this.optimalMeetingTimeFrom = optimalMeetingTimeFrom;
+        this.optimalMeetingTimeto = optimalMeetingTimeto;
+        this.coment = coment;
+        this.status = status;
         this.eventTitle = eventTitle;
-        this.eventDateFrom = eventDateFrom;
         this.eventDateTo = eventDateTo;
+        this.eventDateFrom = eventDateFrom;
         this.minEventPartcipants = minEventPartcipants;
         this.eventDateConfirmTo = eventDateConfirmTo;
         this.location = location;
-        this.minEventTime = minEventTime;
+        this.minEventTimeInHours = minEventTimeInHours;
+        this.participantList = participantList;
     }
 
     public String getId() {
@@ -44,6 +57,38 @@ public class Event {
         this.id = id;
     }
 
+    public Date getOptimalMeetingTimeFrom() {
+        return optimalMeetingTimeFrom;
+    }
+
+    public void setOptimalMeetingTimeFrom(Date optimalMeetingTimeFrom) {
+        this.optimalMeetingTimeFrom = optimalMeetingTimeFrom;
+    }
+
+    public Date getOptimalMeetingTimeto() {
+        return optimalMeetingTimeto;
+    }
+
+    public void setOptimalMeetingTimeto(Date optimalMeetingTimeto) {
+        this.optimalMeetingTimeto = optimalMeetingTimeto;
+    }
+
+    public String getComent() {
+        return coment;
+    }
+
+    public void setComent(String coment) {
+        this.coment = coment;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getEventTitle() {
         return eventTitle;
     }
@@ -52,35 +97,35 @@ public class Event {
         this.eventTitle = eventTitle;
     }
 
-    public String getEventDateFrom() {
-        return eventDateFrom;
-    }
-
-    public void setEventDateFrom(String eventDateFrom) {
-        this.eventDateFrom = eventDateFrom;
-    }
-
-    public String getEventDateTo() {
+    public Date getEventDateTo() {
         return eventDateTo;
     }
 
-    public void setEventDateTo(String eventDateTo) {
+    public void setEventDateTo(Date eventDateTo) {
         this.eventDateTo = eventDateTo;
     }
 
-    public String getMinEventPartcipants() {
+    public Date getEventDateFrom() {
+        return eventDateFrom;
+    }
+
+    public void setEventDateFrom(Date eventDateFrom) {
+        this.eventDateFrom = eventDateFrom;
+    }
+
+    public Integer getMinEventPartcipants() {
         return minEventPartcipants;
     }
 
-    public void setMinEventPartcipants(String minEventPartcipants) {
+    public void setMinEventPartcipants(Integer minEventPartcipants) {
         this.minEventPartcipants = minEventPartcipants;
     }
 
-    public String getEventDateConfirmTo() {
+    public Date getEventDateConfirmTo() {
         return eventDateConfirmTo;
     }
 
-    public void setEventDateConfirmTo(String eventDateConfirmTo) {
+    public void setEventDateConfirmTo(Date eventDateConfirmTo) {
         this.eventDateConfirmTo = eventDateConfirmTo;
     }
 
@@ -92,25 +137,19 @@ public class Event {
         this.location = location;
     }
 
-    public String getMinEventTime() {
-        return minEventTime;
+    public Long getMinEventTimeInHours() {
+        return minEventTimeInHours;
     }
 
-    public void setMinEventTime(String minEventTime) {
-        this.minEventTime = minEventTime;
+    public void setMinEventTimeInHours(Long minEventTimeInHours) {
+        this.minEventTimeInHours = minEventTimeInHours;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "id='" + id + '\'' +
-                ", eventTitle='" + eventTitle + '\'' +
-                ", eventDateFrom='" + eventDateFrom + '\'' +
-                ", eventDateTo='" + eventDateTo + '\'' +
-                ", minEventPartcipants='" + minEventPartcipants + '\'' +
-                ", eventDateConfirmTo='" + eventDateConfirmTo + '\'' +
-                ", location='" + location + '\'' +
-                ", minEventTime='" + minEventTime + '\'' +
-                '}';
+    public List<Participant> getParticipantList() {
+        return participantList;
+    }
+
+    public void setParticipantList(List<Participant> participantList) {
+        this.participantList = participantList;
     }
 }
