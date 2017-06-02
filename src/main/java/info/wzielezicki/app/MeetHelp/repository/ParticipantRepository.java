@@ -10,6 +10,4 @@ import java.util.List;
  */
 public interface ParticipantRepository extends MongoRepository <Participant, String>{
 
-    List<Participant> findByIdEvent(String id);
-
 }

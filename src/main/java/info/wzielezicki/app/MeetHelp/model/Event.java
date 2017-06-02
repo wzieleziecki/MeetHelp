@@ -18,8 +18,8 @@ public class Event {
     @Id
     private String id;
     //:)
-    private Date optimalMeetingTimeFrom;
-    private Date optimalMeetingTimeto;
+    private String optimalMeetingTimeFrom;
+    private String optimalMeetingTimeto;
     private String coment;
     private String status;
     private String eventTitle;
@@ -34,7 +34,7 @@ public class Event {
     public Event() {
     }
 
-    public Event(Date optimalMeetingTimeFrom, Date optimalMeetingTimeto, String coment, String status, String eventTitle, Date eventDateTo, Date eventDateFrom, Integer minEventPartcipants, Date eventDateConfirmTo, String location, Long minEventTimeInHours, List<Participant> participantList) {
+    public Event(String optimalMeetingTimeFrom, String optimalMeetingTimeto, String coment, String status, String eventTitle, Date eventDateTo, Date eventDateFrom, Integer minEventPartcipants, Date eventDateConfirmTo, String location, Long minEventTimeInHours, List<Participant> participantList) {
         this.optimalMeetingTimeFrom = optimalMeetingTimeFrom;
         this.optimalMeetingTimeto = optimalMeetingTimeto;
         this.coment = coment;
@@ -57,19 +57,19 @@ public class Event {
         this.id = id;
     }
 
-    public Date getOptimalMeetingTimeFrom() {
+    public String getOptimalMeetingTimeFrom() {
         return optimalMeetingTimeFrom;
     }
 
-    public void setOptimalMeetingTimeFrom(Date optimalMeetingTimeFrom) {
+    public void setOptimalMeetingTimeFrom(String optimalMeetingTimeFrom) {
         this.optimalMeetingTimeFrom = optimalMeetingTimeFrom;
     }
 
-    public Date getOptimalMeetingTimeto() {
+    public String getOptimalMeetingTimeto() {
         return optimalMeetingTimeto;
     }
 
-    public void setOptimalMeetingTimeto(Date optimalMeetingTimeto) {
+    public void setOptimalMeetingTimeto(String optimalMeetingTimeto) {
         this.optimalMeetingTimeto = optimalMeetingTimeto;
     }
 

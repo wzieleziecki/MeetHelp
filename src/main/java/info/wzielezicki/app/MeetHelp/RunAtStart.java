@@ -1,19 +1,35 @@
 package info.wzielezicki.app.MeetHelp;
 
+import info.wzielezicki.app.MeetHelp.model.Event;
+import info.wzielezicki.app.MeetHelp.model.Participant;
 import info.wzielezicki.app.MeetHelp.repository.EventRepository;
 import info.wzielezicki.app.MeetHelp.repository.ParticipantRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 
 /**
  * Created by wzielezi on 2017-05-27.
  */
 @Component
+@EnableScheduling
 public class RunAtStart {
 
     //private final MongoOperations mongoOperations;
@@ -21,75 +37,62 @@ public class RunAtStart {
     private final ParticipantRepository participantRepository;
     private final MongoOperations mongoOperations;
     private final Logger logger = Logger.getLogger(RunAtStart.class);
-    public RunAtStart(EventRepository eventRepository, ParticipantRepository participantRepository, MongoOperations mongoOperations) {
+    private final MongoTemplate mongoTemplate;
+
+    @Autowired
+    public RunAtStart(EventRepository eventRepository, ParticipantRepository participantRepository, MongoOperations mongoOperations, MongoTemplate mongoTemplate) {
         this.eventRepository = eventRepository;
         this.participantRepository = participantRepository;
         this.mongoOperations = mongoOperations;
+        this.mongoTemplate = mongoTemplate;
     }
 
-    @Autowired
-
-
     @PostConstruct
+    @Scheduled(cron = "0,30 * * * * *")
     public void runAtStart(){
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Event> eventList = eventRepository.findAll();
+        for(Event e: eventList){
 
-//
-//        Participant participant = new Participant();
-//        Participant participant2 = new Participant();
-//        Participant participant3 = new Participant();
-//        Event event = new Event();
-//
-//        event.setEventTitle("Wyjazd na rower Turbacz");
-//        event.setEventDateFrom(new Date());
-//        event.setEventDateTo("27.05.2017 22:00:00");
-//        event.setMinEventPartcipants(2);
-//        event.setEventDateConfirmTo("26.05.2017 10:00:00");
-//        event.setLocation("Lindego 13a");
-//        event.setMinEventTime("06:00:00");
-//
-//        List<Participant> participantList = new ArrayList<>();
-//        participantList.add(participant);
-//        List<Participant> participantList2 = new ArrayList<>();
-//        participantList.add(participant2);
-//        List<Participant> participantList3 = new ArrayList<>();
-//        participantList.add(participant3);
-//        event.setParticipantList(participantList);
-//        event.setParticipantList(participantList2);
-//        event.setParticipantList(participantList3);
-//
-//
-//        participant.setSurname("Zieleziecki");
-//        participant.setName("Wojciech");
-//        participant.setIdEvent("");
-//        participant.setEmail("wojciech.zieleziecki@gmail.com");
-//        participant.setAttend(1);
-//        participant.setAttendDataFrom(new Date());
-//        participant.setAttendDataTo(new Date());
-//
-//        participant2.setSurname("Zieleziecki");
-//        participant2.setName("Iza");
-//        participant2.setIdEvent("");
-//        participant2.setEmail("wojciech.zieleziecki@gmail.com");
-//        participant2.setAttend(1);
-//        participant2.setAttendDataFrom(new Date());
-//        participant2.setAttendDataTo(new Date());
-//
-//        participant3.setSurname("Zieleziecki");
-//        participant3.setName("Heniek");
-//        participant3.setIdEvent("");
-//        participant3.setEmail("wojciech.zieleziecki@gmail.com");
-//        participant3.setAttend(1);
-//        participant3.setAttendDataFrom(new Date());
-//        participant3.setAttendDataTo(new Date());
-//
-//
-//        eventRepository.save(event);
-//        participantRepository.save(participant);
-//
-//
-//        eventRepository.save(event);
-//        participantRepository.save(participant);
+            System.out.println("Przerabiam dokument o ID: " + e.getId());
 
+            List<Long> attendDateFromList = new ArrayList<>();
+            List<Long> attendDateToList = new ArrayList<>();
+            int minimumParticipant = e.getParticipantList().size();
+            System.out.println("ilość uczestników eventu" +e.getId()+ " " + e.getParticipantList().size());
+
+            for(Participant p: e.getParticipantList()){
+                try {
+                    attendDateFromList.add(format.parse(p.getAttendDataFrom()).getTime());
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    attendDateToList.add(format.parse(p.getAttendDataTo()).getTime());
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+            long maxDateFrom = Collections.max(attendDateFromList);
+            long minDateTo = Collections.min(attendDateToList);
+
+            System.out.println("Minimalna data: " + minDateTo);
+            System.out.println("Max data: " + maxDateFrom);
+            System.out.println((minDateTo - maxDateFrom )/ (60 * 60 * 1000) % 24);
+
+            // TODO: 2017-06-01 informacje na temat problemów ze spotkaniem nie spełniony czas / minimalna ilość uczestnuików itp musi być logowany
+            if ((((minDateTo - maxDateFrom) / (60 * 60 * 1000) % 24 )>= e.getMinEventTimeInHours()) && minimumParticipant >= e.getMinEventPartcipants() ){
+
+                Query query = new Query(Criteria.where("id").is(e.getId()));
+                Update update = new Update();
+                update.set("optimalMeetingTimeFrom", format.format(new Date(maxDateFrom)));
+                update.set("optimalMeetingTimeto", format.format(new Date(minDateTo)));
+                mongoTemplate.updateFirst(query, update, Event.class);
+
+                System.out.println("Spotkanie odbędzie się w godzinach od: "+  maxDateFrom +" do: "+minDateTo );
+            }else System.out.println("Spotkanie nie odbędzie się, minimalny czas spotkania "+ e.getMinEventTimeInHours() + " nie został spełniony"  );
+        }
     }
 //    private void printAll(List<Event> allEvent){allEvent.forEach(logger::info);}
 }
