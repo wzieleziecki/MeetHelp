@@ -13,5 +13,6 @@ import java.util.stream.Stream;
 public interface EventRepository extends MongoRepository <Event, String> {
 
     List<Event> findById(String eventId);
+    List<Event> findByStatus(String status);
 
 }

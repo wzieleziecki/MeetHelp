@@ -50,7 +50,7 @@ public class RunAtStart {
         this.notificationService = notificationService;
     }
 
-    @Autowired
+
 
 
     @PostConstruct
@@ -61,35 +61,40 @@ public class RunAtStart {
         Update update = new Update();
         for(Event e: eventList){
 
-            System.out.println("Przerabiam dokument o ID: " + e.getId());
+            logger.info("Przerabiam dokument o ID: " + e.getId());
 
             List<Long> attendDateFromList = new ArrayList<>();
             List<Long> attendDateToList = new ArrayList<>();
             List<String> participantMailAddressesList = new ArrayList<>();
-            int minimumParticipant = e.getParticipantList().size();
-            System.out.println("ilość uczestników eventu " +e.getId()+ " " + e.getParticipantList().size());
 
+            // TODO: 2017-06-03 poprawic tak aby ta lista przyjmowala tylko uczestników ktorzy odpowidzieli na zgloszenie
+            int minimumParticipant = e.getParticipantList().size();
+
+            logger.info("ilość uczestników eventu " +e.getId()+ " " + e.getParticipantList().size());
+
+            // TODO: 2017-06-03 domyślną data spotkania dla osób które jescze nie odpowiedzialy na zgloszenie ma byc data eventu
             for(Participant p: e.getParticipantList()){
-                try {
-                    attendDateFromList.add(format.parse(p.getAttendDataFrom()).getTime());
-                } catch (ParseException e1) {
-                    logger.info("Error parsowanie daty attendDataFrom" +e1.getMessage());
-                }
-                try {
-                    attendDateToList.add(format.parse(p.getAttendDataTo()).getTime());
-                } catch (ParseException e1) {
-                    logger.info("Error parsowanie daty attendDataTo" +e1.getMessage());
-                }
-                participantMailAddressesList.add(p.getEmail());
-                try {
-                    String url = "http://localhost:8080/api/event/"+e.getId()+"/"+p.getEmail()+"/dostępność od yyyy-mm-dd gg:mm:ss/ dostępność do yyyy-mm-dd gg:mm:ss ";
-                    notificationService.sendNotification(p.getEmail(), e.getEventTitle(), url);
-                }catch ( MailException e1){
-                    logger.info("Error wysyłanie maila "+ e1.getMessage() );
-                }
-                Query query = new Query(Criteria.where("id").is(e.getId()).and("status").is("A"));
-                update.set("status","S");
-                mongoTemplate.updateFirst(query, update, Event.class);
+                    try {
+                        attendDateFromList.add(format.parse(p.getAttendDataFrom()).getTime());
+                    } catch (ParseException e1) {
+                        logger.info("Error parsowanie daty attendDataFrom" + e1.getMessage());
+                    }
+                    try {
+                        attendDateToList.add(format.parse(p.getAttendDataTo()).getTime());
+                    } catch (ParseException e1) {
+                        logger.info("Error parsowanie daty attendDataTo" + e1.getMessage());
+                    }
+                    participantMailAddressesList.add(p.getEmail());
+                    try {
+                        String url = "http://localhost:8080/api/event/" + e.getId() + "/" + p.getEmail() + "/dostępność od yyyy-mm-dd gg:mm:ss/ dostępność do yyyy-mm-dd gg:mm:ss ";
+                        notificationService.sendNotification(p.getEmail(), e.getEventTitle(), url);
+                    } catch (MailException e1) {
+                        logger.info("Error wysyłanie maila " + e1.getMessage());
+                    }
+                    Query query = new Query(Criteria.where("id").is(e.getId()).and("status").is("A"));
+                    update.set("status", "S");
+                    mongoTemplate.updateFirst(query, update, Event.class);
+      //          }
 
             }
             long maxDateFrom = Collections.max(attendDateFromList);
@@ -101,7 +106,9 @@ public class RunAtStart {
 
             // TODO: 2017-06-01 informacje na temat problemów ze spotkaniem nie spełniony czas / minimalna ilość uczestników itp musi być logowany
             // TODO: 2017-06-01 email ma zostać wysłany dnia eventDataConfirmationTo
-            if ((((minDateTo - maxDateFrom) / (60 * 60 * 1000) % 24 )>= e.getMinEventTimeInHours()) && minimumParticipant >= e.getMinEventPartcipants() ){
+            // TODO: 2017-06-03 dolożyć waunek na datę końca przyjmowania zgłoszeń
+            //spotkanie odbędzie się kiedy warunki zostaną spełnione
+            if ((((minDateTo - maxDateFrom) / (60 * 60 * 1000) % 24 )>= e.getMinEventTimeInHours()) && minimumParticipant >= e.getMinEventPartcipants()){
 
                 //zapisanie optymalnego czasu spotkania
                 Query query = new Query(Criteria.where("id").is(e.getId()));
@@ -116,14 +123,14 @@ public class RunAtStart {
                     }catch ( MailException e1){
                         logger.info("Error wysyłanie maila "+ e1.getMessage() );
                     }
-                    new Query(Criteria.where("id").is(e.getId()).and("status").is("A"));
+                    Query query1 = new Query(Criteria.where("id").is(e.getId()).and("status").is("S"));
                     update.set("status","D");
-                    mongoTemplate.updateFirst(query, update, Event.class);
+                    mongoTemplate.updateFirst(query1, update, Event.class);
                 }
 
                 logger.info("Spotkanie odbędzie się w godzinach od: "+  maxDateFrom +" do: "+minDateTo );
                 logger.info("Lista maili uczastników spotkania" +participantMailAddressesList);
-            }else System.out.println("Spotkanie nie odbędzie się, minimalny czas spotkania "+ e.getMinEventTimeInHours() + " nie został spełniony"  );
+            }else logger.info("Spotkanie nie odbędzie się, minimalny czas spotkania "+ e.getMinEventTimeInHours() + " nie został spełniony"  );
         }
     }
 }

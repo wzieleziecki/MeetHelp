@@ -21,6 +21,7 @@ public class Event {
     private String optimalMeetingTimeFrom;
     private String optimalMeetingTimeto;
     private String coment;
+    // TODO: 2017-06-03 domyślna wartość pola ma być "A"
     private String status;
     private String eventTitle;
     private Date eventDateTo;

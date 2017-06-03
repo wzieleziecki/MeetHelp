@@ -37,11 +37,15 @@ public class AppRESTController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getEvent")
     public @ResponseBody List<Event> findAll(){
-        // TODO: 2017-06-02 tylko aktywne
 
         return eventRepository.findAll();
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/getSheduledEvents")
+    public @ResponseBody List<Event> findAllsheduledEvents(){
+
+        return eventRepository.findByStatus("D");
+    }
     //Aktualizacja eventu z adresu URL
     // TODO: 2017-06-02 przerobić na zmienne z zapytania https://www.youtube.com/watch?v=Hdd4nCncedg&index=11&list=PLU2dl_1LV_STR4IV60K_6wKBJpVkIHEiY
     @GetMapping("/{eventId}/{email}/{from}/{to}")
@@ -57,6 +61,7 @@ public class AppRESTController {
         Update update = new Update();
                 update.set("participantList.$.attendDataFrom", from);
                 update.set("participantList.$.attendDataTo", to);
+                update.set("participantList.$.attend", 1);
         mongoTemplate.updateFirst(query, update, Event.class);
     }
 

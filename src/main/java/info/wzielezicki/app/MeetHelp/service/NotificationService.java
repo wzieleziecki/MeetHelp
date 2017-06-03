@@ -19,6 +19,7 @@ public class NotificationService {
         this.javaMailSender = javaMailSender;
     }
 
+    // TODO: 2017-06-03 informacje zaprogramować dla statusów zgłoszenia
     public void sendNotification(String mail, String eventTitle, String message) throws MailException{
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(mail);

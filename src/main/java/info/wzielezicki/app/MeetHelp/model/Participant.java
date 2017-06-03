@@ -16,6 +16,7 @@ public class Participant {
     private String surname;
     private String email;
     private Integer attend;
+    // TODO: 2017-06-03 domyslna wartość pól ma być taka sama jak wartość w polach Event eventDateTo, eventDateFrom;
     private String attendDataFrom;
     private String attendDataTo;
 
